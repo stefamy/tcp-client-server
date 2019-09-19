@@ -1,2 +1,1 @@
-# tcp-client-server
-TCP Client and Server Implementation
+# TCP Client and Server Implementation
