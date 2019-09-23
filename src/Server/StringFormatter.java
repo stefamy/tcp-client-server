@@ -1,6 +1,6 @@
-package Server;
+package server;
 
-public class StringManipulator {
+public class StringFormatter {
 
   public static String reverseChangeCase(String originalString) {
     StringBuilder newString = new StringBuilder();
