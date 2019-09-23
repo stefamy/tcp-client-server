@@ -35,8 +35,8 @@ public class Client {
     try {
       this.socket = new Socket(this.socketData.getAddress(), this.socketData.getPort());
     } catch (IOException e) {
-      System.out.println(String.format("I/O error prevented connecting to socket on port %s. "
-          + "Exiting.", this.socket.getPort()));
+      System.out.println(String.format("Error connecting to socket on port %s. (The server may be "
+           + "down.) Exiting.", this.socketData.getPort()));
       exit(1);
     }
   }
