@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,15 +17,18 @@ public class Server {
 
   private static final int MAX_NUM_ATTEMPTS = 5;
   private int port;
+  private InetAddress address;
   private ServerSocket serverSocket;
 
   /**
-   * Creates a new TCP server object for the passed port.
+   * Creates a new TCP server object for the passed port and IP address.
    *
    * @param port - Port number to create server socket on, as an int.
+   * @param address - Local IP Address to bind to, as an InetAddress.
    */
-  public Server(int port) {
+  public Server(int port, InetAddress address) {
     this.port = port;
+    this.address = address;
     this.serverSocket = null;
   }
 
@@ -34,7 +38,7 @@ public class Server {
    */
   public void listen() {
     try {
-      this.serverSocket = new ServerSocket(this.port);
+      this.serverSocket = new ServerSocket(this.port, 0, this.address);
     } catch (IllegalArgumentException e) {
       System.out.println(String.format("Port number %s is out of valid range. Unable to open "
           + "socket. Exiting.", this.port));
