@@ -14,6 +14,7 @@ import java.net.Socket;
  */
 public class Server {
 
+  private static final int MAX_NUM_ATTEMPTS = 5;
   private int port;
   private ServerSocket serverSocket;
 
@@ -27,7 +28,6 @@ public class Server {
     this.serverSocket = null;
   }
 
-
   /**
    * Opens a server socket in passive mode to await client connection. If unable to open socket,
    * prints appropriate error message and exits.
@@ -35,13 +35,11 @@ public class Server {
   public void listen() {
     try {
       this.serverSocket = new ServerSocket(this.port);
-    }
-    catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       System.out.println(String.format("Port number %s is out of valid range. Unable to open "
           + "socket. Exiting.", this.port));
       exit(1);
-    }
-    catch (IOException e) {
+    } catch (IOException e) {
       System.out.println(String.format("I/O error prevented opening server socket on port %s. "
           + "Exiting.", this.port));
       exit(1);
@@ -49,8 +47,8 @@ public class Server {
   }
 
   /**
-   * Accepts a client connection and returns the client socket. In case of I/O exception,
-   * prints appropriate error message and returns null.
+   * Accepts a client connection and returns the client socket. In case of I/O exception, prints
+   * appropriate error message and returns null.
    *
    * @return Connected client socket or null if connection fails.
    */
@@ -73,13 +71,23 @@ public class Server {
     try {
       PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
       try {
-        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) == null) {
-          out.println("Received empty message. Send requested string for formatting.");
+        BufferedReader in = new BufferedReader(
+            new InputStreamReader(clientSocket.getInputStream()));
+        String inputLine = in.readLine();
+        int attempts = 1;
+        while (attempts <= MAX_NUM_ATTEMPTS && inputLine != null) {
+          if (inputLine.length() == 0) {
+            out.println(String.format("Received empty message (attempt %d/%d). What string would "
+                + "you like formatted?", attempts, MAX_NUM_ATTEMPTS));
+            attempts++;
+            inputLine = in.readLine();
+          } else {
+            String reversedStr = TextFormatter.reverseChangeCase(inputLine);
+            out.println(reversedStr);
+            return;
+          }
         }
-        String reversedStr = StringFormatter.reverseChangeCase(inputLine);
-        out.println(reversedStr);
+        out.println("Received maximum number of empty messages (5). Closing connection.");
       } catch (IOException e) {
         System.out.println("Error reading from input stream.");
       }
@@ -89,8 +97,8 @@ public class Server {
   }
 
   /**
-   * Closes this socket and exits the program. If exception encountered when closing socket,
-   * prints appropriate error message and exits with status 1.
+   * Closes this socket and exits the program. If exception encountered when closing socket, prints
+   * appropriate error message and exits with status 1.
    */
   public void end() {
     try {
@@ -102,4 +110,4 @@ public class Server {
     exit(0);
   }
 
-  }
+}

@@ -15,10 +15,10 @@ public class ServerApp {
   /**
    * Runs the program through the following steps using the passed port, terminating the program
    * once complete:
-   *  - Accepts a single client through the passed port,
-   *  - Receives a string from the client,
-   *  - Formats and sends the new string to the client,
-   *  - Ends the program.
+   * - Accepts a single client through the passed port,
+   * - Receives a string from the client,
+   * - Formats and sends the new string to the client,
+   * - Ends the program.
    */
   public static void run(int port) {
     Server server = new Server(port);
@@ -32,8 +32,8 @@ public class ServerApp {
   }
 
   /**
-   * Main program class. Can optionally pass command lne arg with port number to use.
-   * If none supplied, defaults to port 1500.
+   * Main program class. Can optionally pass command lne arg with port number to use. If none
+   * supplied, defaults to port 1500.
    *
    * @param args - Command line arguments. Optionally, can supply a single arg with the port number
    * to use for server socket (number range 0-65535, inclusive).
