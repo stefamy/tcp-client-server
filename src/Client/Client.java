@@ -1,37 +1,94 @@
 package client;
 
+import static java.lang.System.exit;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import socketdata.SocketData;
 
+/**
+ * TCP Client implementation with associate methods to send and receive data.
+ */
 public class Client {
 
+  private SocketData socketData;
+  private Socket socket;
+
   /**
-   * The goal of this assignment is to implement a TCP client and server. You can use Java. Your TCP
-   * client/server will communicate over the network and exchange data. You can use localhost to
-   * test your work.
+   * Constructs a new Client object with the given SocketData.
    *
-   * The server will start in passive mode listening for a transmission from the client. The client
-   * will then start and contact the server (on a given IP address and port number). The client will
-   * pass the server a string (eg: “network”) up to 80 characters in length.
-   *
-   * On receiving a string from a client, the server should: 1) reverse all the characters, and 2)
-   * reverse the capitalization of the strings (“network” would now become “KROWTEN”). The server
-   * should then send the string back to the client.
-   *
-   * The client will display the received string and exit.
-   *
-   *
-   * TODO: Javadoc written (all classes) TODO: Refactor client and server classes TODO: Close
-   * connection after formatted string sent/received TODO: Ensure follows TCP protocol.
+   * @param socketData - The address and port number for this client, as a SocketData object.
    */
-  public static void main(String[] args) throws IOException {
+  public Client(SocketData socketData) {
+    this.socketData = socketData;
+    this.socket = null;
+  }
 
+  /**
+   * Opens the socket connection for this client. If errors are encountered, prints a message
+   * accordingly and exits w/status 1.
+   */
+  public void connect() {
+    try {
+      this.socket = new Socket(this.socketData.getAddress(), this.socket.getPort());
+    } catch (IOException e) {
+      System.out.println(String.format("I/O error prevented connecting to socket on port %s. "
+          + "Exiting.", this.socket.getPort()));
+      exit(1);
+    }
+  }
 
+  /**
+   * Given a string of output text, sends it through the socket. If errors are encountered, prints a
+   * message accordingly, closes the socket, and exits w/status 1.
+   *
+   * @param outputText - Text to send through socket, as a String.
+   */
+  public void send(String outputText) {
+    try {
+      PrintWriter outputStream = new PrintWriter(this.socket.getOutputStream(), true);
+      outputStream.println(outputText);
+    } catch (IOException e) {
+      System.out.println("I/O Error when opening output stream to server. Exiting.");
+      this.end(1);
+    }
+  }
 
+  /**
+   * Reads the message from the socket and returns it as a String. If errors are encountered, prints
+   * a message accordingly, closes the socket, and exits w/status 1.
+   *
+   * @return Message received from socket, as a String.
+   */
+  public String receive() {
+    try {
+      BufferedReader inputStream = new BufferedReader(new InputStreamReader(
+          this.socket.getInputStream()));
+      return inputStream.readLine();
+    } catch (IOException e) {
+      System.out.println("I/O Error when reading input stream from server. Exiting.");
+      this.end(1);
+    }
+    return null;
+  }
+
+  /**
+   * Closes the socket and exits with the passed status. If errors are encountered, prints a message
+   * accordingly and exits w/status 1.
+   *
+   * @param status - The status level to exit with, as an int (0 for success, 1 for errors).
+   */
+  public void end(int status) {
+    try {
+      this.socket.close();
+      exit(status);
+    } catch (IOException e) {
+      System.out.println("I/O Error when closing socket. Exiting.");
+      exit(1);
+    }
   }
 
 }

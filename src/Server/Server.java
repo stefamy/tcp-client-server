@@ -6,29 +6,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import socketdata.SocketData;
 
 /**
- * TCP Server (single client) implementation with required ServerApp program methods.
+ * TCP Server (single client) implementation with associate methods to send and receive data.
  */
 public class Server {
 
-  private static final int MAX_NUM_ATTEMPTS = 5;
-  private int port;
-  private InetAddress address;
+  private SocketData socketData;
   private ServerSocket serverSocket;
 
   /**
    * Creates a new TCP server object for the passed port and IP address.
    *
-   * @param port - Port number to create server socket on, as an int.
-   * @param address - Local IP Address to bind to, as an InetAddress.
+   * @param socketData - Port number and address to use for the socket, in a SocketData object.
    */
-  public Server(int port, InetAddress address) {
-    this.port = port;
-    this.address = address;
+  public Server(SocketData socketData) {
+    this.socketData = socketData;
     this.serverSocket = null;
   }
 
@@ -38,14 +34,15 @@ public class Server {
    */
   public void listen() {
     try {
-      this.serverSocket = new ServerSocket(this.port, 0, this.address);
+      this.serverSocket = new ServerSocket(this.socketData.getPort(), 0,
+          this.socketData.getAddress());
     } catch (IllegalArgumentException e) {
       System.out.println(String.format("Port number %s is out of valid range. Unable to open "
-          + "socket. Exiting.", this.port));
+          + "socket. Exiting.", this.socketData.getPort()));
       exit(1);
     } catch (IOException e) {
       System.out.println(String.format("I/O error prevented opening server socket on port %s. "
-          + "Exiting.", this.port));
+          + "Exiting.", this.socketData.getPort()));
       exit(1);
     }
   }
@@ -66,52 +63,52 @@ public class Server {
   }
 
   /**
-   * Given a client socket, accepts the string to format, runs formatter, returns result to client.
-   * If exceptions encountered, prints appropriate error messages and continues.
+   * Sends the passed string to the passed client socket. If exceptions encountered, prints
+   * appropriate error messages.
    *
-   * @param clientSocket - Client socket to receive input and send output through.
+   * @param clientSocket - Client socket to send output to.
+   * @param outputText - Message to send through socket, as a String.
    */
-  public void handleClient(Socket clientSocket) {
+  public void send(Socket clientSocket, String outputText) {
     try {
-      PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-      try {
-        BufferedReader in = new BufferedReader(
-            new InputStreamReader(clientSocket.getInputStream()));
-        String inputLine = in.readLine();
-        int attempts = 1;
-        while (attempts <= MAX_NUM_ATTEMPTS && inputLine != null) {
-          if (inputLine.length() == 0) {
-            out.println(String.format("Received empty message (attempt %d/%d). What string would "
-                + "you like formatted?", attempts, MAX_NUM_ATTEMPTS));
-            attempts++;
-            inputLine = in.readLine();
-          } else {
-            String reversedStr = TextFormatter.reverseChangeCase(inputLine);
-            out.println(reversedStr);
-            return;
-          }
-        }
-        out.println("Received maximum number of empty messages (5). Closing connection.");
-      } catch (IOException e) {
-        System.out.println("Error reading from input stream.");
-      }
+      PrintWriter outputStream = new PrintWriter(clientSocket.getOutputStream(), true);
+      outputStream.println(outputText);
     } catch (IOException e) {
       System.out.println("Error creating output stream.");
     }
   }
 
   /**
+   * Reads the data from the passed socket and returns it as a String. If exceptions encountered,
+   * prints appropriate error messages and returns null.
+   *
+   * @param clientSocket - Client socket to send output to.
+   * @return Message receivec from client socket, as a String.
+   */
+  public String receive(Socket clientSocket) {
+    try {
+      BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      return in.readLine();
+    } catch (IOException e) {
+      System.out.println("Error reading from input stream. Exiting.");
+    }
+    return null;
+  }
+
+  /**
    * Closes this socket and exits the program. If exception encountered when closing socket, prints
    * appropriate error message and exits with status 1.
+   *
+   * @param status - Status to exit with (0 for success, 1 for errors), as an int.
    */
-  public void end() {
+  public void end(int status) {
     try {
       this.serverSocket.close();
     } catch (IOException e) {
       System.out.println("I/O error prevented closing server socket. Exiting.");
       exit(1);
     }
-    exit(0);
+    exit(status);
   }
 
 }

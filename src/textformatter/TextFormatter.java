@@ -1,4 +1,4 @@
-package server;
+package textformatter;
 
 /**
  * Class containing static methods to format strings and characters.
