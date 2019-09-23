@@ -33,7 +33,7 @@ public class Client {
    */
   public void connect() {
     try {
-      this.socket = new Socket(this.socketData.getAddress(), this.socket.getPort());
+      this.socket = new Socket(this.socketData.getAddress(), this.socketData.getPort());
     } catch (IOException e) {
       System.out.println(String.format("I/O error prevented connecting to socket on port %s. "
           + "Exiting.", this.socket.getPort()));

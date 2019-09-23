@@ -16,7 +16,6 @@ public class ClientApp {
   private static final int MAX_CHARS_ALLOWED = 80;
   private static final int NUM_OPTIONAL_ARGS = 2;
 
-
   /**
    * Accepts user input from the command line and returns it as a String. String must be between 1
    * and 80 characters (inclusive).
@@ -85,7 +84,5 @@ public class ClientApp {
 
     // Run the program:
     ClientApp.run(new Client(socketData));
-
-
   }
 }
