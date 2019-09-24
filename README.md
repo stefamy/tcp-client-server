@@ -1,4 +1,5 @@
-# TCP client and server Implementation
+# TCP Client and Server Implementation    
+TCP client and server implementation using java. Server starts in passive mode and waits for client connection. Once the connection is made, the client can send a string between 1 and 80 characters to the server for simple text formatting (the text is reversed and the capitalization of each letter is inverted). The server returns the formatted text. Once this process is complete, both the client and server close the socket and the programs terminate.
 
 ## To run:  
 
@@ -35,8 +36,11 @@ java server/ServerApp 9999 localhost
 java client/ClientApp 9999 localhost   
 
 
-*Example server output*:
-
-
-
-*Example client output*:
+*Example server output*:  
+   
+<img alt="server terminal window screenshot" src="https://github.com/stefamy/tcp-client-server/blob/master/server-screenshot.png" width="400">
+   
+*Example client output*:  
+   
+<img alt="client terminal window screenshot" src="https://github.com/stefamy/tcp-client-server/blob/master/client-screenshot.png" width="400">
+   
