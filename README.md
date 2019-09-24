@@ -1,5 +1,5 @@
 # TCP Client and Server Implementation    
-TCP client and server implementation using java. Server starts in passive mode and waits for client connection. Once the connection is made, the client can send a string between 1 and 80 characters to the server for simple text formatting (the text is reversed and the capitalization of each letter is inverted). The server returns the formatted text. Once this process is complete, both the client and server close the socket and the programs terminate.
+TCP client and server implementation using java. Server starts in passive mode and waits for client connection. Once the connection is made, the user on the client side is prompted to input a string between 1 and 80 characters. The input is sent from the client to the server for simple text formatting (the text is reversed and the capitalization of each letter is inverted). The server returns the formatted text to the client. Once this process is complete, both the client and server close the socket and the programs terminate.
 
 ## To run:  
 
