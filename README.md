@@ -9,7 +9,7 @@
    
 2) Start server
    - In the same command line window:
-   - Type **java server/ServerApp.java** and hit **return***  
+   - Type **java server/ServerApp** and hit **return***  
    - You should now see a message that the TCP server is listening and waiting for a client to connect.
    
 3) Compile client code
