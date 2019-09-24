@@ -83,7 +83,7 @@ public class Server {
    * prints appropriate error messages and returns null.
    *
    * @param clientSocket - Client socket to send output to.
-   * @return Message receivec from client socket, as a String.
+   * @return Message received from client socket, as a String.
    */
   public String receive(Socket clientSocket) {
     try {
